@@ -1,5 +1,3 @@
 .App {
-  text-align: center;
+    text-align: center
 }
-@import 'react-big-calendar/lib/sass/styles';
-@import 'react-big-calendar/lib/addons/dragAndDrop/styles'; 

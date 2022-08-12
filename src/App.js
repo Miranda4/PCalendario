@@ -1,44 +1,76 @@
-// import Calendar from "react-calendar";
-import { Calendar, momentLocalizer } from 'react-big-calendar'
-import moment from 'moment'
-const localizer = momentLocalizer(moment)
+import './App.css';
+import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
+import format from 'date-fns/format';
+import parse from 'date-fns/parse';
+import startOfWeek from 'date-fns/startOfWeek';
+import getDay from 'date-fns/getDay';
+import "react-big-calendar/lib/css/react-big-calendar.css"
+import React, { useState } from 'react';
+import DatePicker from 'react-datepicker'
+import "react-datepicker/dist/react-datepicker.css"
 
+const locales = {
+    "es-MX": require ("date-fns/locale/es")
+}
+
+const localizer = dateFnsLocalizer({
+    format,
+    parse,
+    startOfWeek,
+    getDay,
+    locales
+})
+
+const events = [
+    {
+        title: "meeting",
+        allDay: true,
+        start: new Date(2022, 8, 0),
+        end: new Date(2022, 8, 0)
+    },
+    {
+        title: "vacation",
+        start: new Date( 2022, 8, 0),
+        end: new Date(2022, 8, 0)
+    },
+    {
+        title: "conference",
+        start: new Date(2022, 8, 0),
+        end: new Date(2022, 8, 0)
+    },
+]
 
 
 function App() {
-  const myEventsList = [
-    {
-      id: 0,
-      title: "All Day Event very long title",
-      allDay: true,
-      start: new Date(2015, 3, 0),
-      end: new Date(2015, 3, 1)
-    },
-    {
-      id: 1,
-      title: "Long Event",
-      start: new Date(2015, 3, 7),
-      end: new Date(2015, 3, 10)
-    },
-  
-    {
-      id: 2,
-      title: "DTS STARTS",
-      start: new Date(2016, 2, 13, 0, 0, 0),
-      end: new Date(2016, 2, 20, 0, 0, 0)
+
+    const [newEvent, setNewEvent] = useState({title: "", start: ""})
+    const [allEvents, setAllEvents] = useState(events)
+
+    function handleAddEvent() {
+        setAllEvents([...allEvents, newEvent])
     }
-];
-  return (
-    <div className='App'>
-      <Calendar
-      localizer={localizer}
-      events={myEventsList}
-      startAccessor="start"
-      endAccessor="end"
-      style={{ height: 500 }}
-    />
-    </div>
-  );
+
+    return (
+        <div className='App'>
+            <h1>Calendario PC</h1>
+            <h2>Agregar evento</h2>
+            <div>
+                <input type="text" placeholder='Agrega titulo' style={{ width: "20%", marginRight: "10%" }} value={newEvent.title} onchange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} />
+                
+                <DatePicker placeholderText="Fecha inicio" style={{ marginRight: "10px" }}
+                    selected={newEvent.start } onChange ={(start) => setNewEvent({...newEvent, start})} />
+                <DatePicker placeholderText="Fecha fin"
+                    selected={newEvent.end} onChange={(end) => setNewEvent({ ...newEvent, end })} />
+                <button style={{marginTop: "10px"}} onClick={handleAddEvent}>Agregar evento</button>
+            </div>
+            <Calendar
+                localizer={localizer}
+                events={allEvents}
+                startAccesor='start'
+                andAccessor='end'
+                style={{ height: 500, margin: '50px' }} />
+        </div>
+    )
 }
 
 export default App;
